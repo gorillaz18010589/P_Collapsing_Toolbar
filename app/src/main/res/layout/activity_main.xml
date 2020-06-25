@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+
+app:layout_scrollFlags是一个非常重要的属性，它里边的取值主要有五种，下面我分别来解释：
+
+        1.scroll 表示CollapsingToolbarLayout可以滚动（不设置的话头部的ImageView将不能折叠）
+        2.enterAlways 表示底部的滚动控件只要向下滚动，头部就显示出来
+        3.enterAlwaysCollapsed 表示当底部滚动控件滚动见顶时，头部显示出来
+        4.exitUntilCollapsed 表示头部折叠到最小高度时（Toolbar的高度），就不再折叠
+        5.snap 表示在滑动过程中如果停止滑动，则头部会就近折叠（要么恢复原状，要么折叠成一个Toolbar）
+
+app:contentScrim="@color/colorPrimary"表示当ImageView折叠后Toolbar的颜色，这里的颜色我们不可以直接在Toolbar中设置，
+因为Toolbar一开始是透明的，只有当ImageView折叠到Toolbar的高度时Toolbar才变为蓝色的。
+app:layout_collapseMode="parallax"表示ImageView的折叠和CollapsingToolbarLayout的折叠不同步，
+那么这个不同步到底是怎样一个不同步法呢？还有另外一个参数来设置不同步的参数，如下：
+
+app:layout_collapseParallaxMultiplier="0.5"表示视觉乘数，该数值的取值为0～1，数值越大，
+视觉差越大（如果这里的值为0，则在头部折叠的过程中，ImageView的顶部在慢慢隐藏，底部不动，如果这里的值为1，
+ImageView的顶部不懂，底部慢慢隐藏，如果这里的取值为0～1之间，则在折叠的过程中，ImageView的顶部和底部都会隐藏，
+但是头部和底部隐藏的快慢是不一样的，具体速度和视觉乘数有关）
+
+app:layout_collapseMode这个属性还有一个取值，是pin，该属性表示当折叠完成时将该控件放在页面的头部.
+
+另一方面，当我们在使用CollapsingToolbarLayout的时候，我们一般也不再是通过Toolbar来给页面设置title了，因为这个title能够实现的效果非常有限，那么我们怎么给页面设置Title呢？我们可以通过给CollapsingToolbarLayout设置如下属性来解决Title的问题：
+
+app:title="MyToolBar" 表示给页面设置一个Toolbar
+app:collapsedTitleGravity="right" 表示折叠之后Title显示的位置
+app:expandedTitleGravity="left|bottom" 表示展开时Title显示的位置
+
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:src="@drawable/toolbar_icon"
+            android:scaleType="centerCrop"/> =>將圖片縮放智等比例寬
+ >
+
+        app:layout_anchor="@id/appBar" 我要相依於哪個容器
+        app:layout_anchorGravity="bottom|end"/> 相依魚的位置
+
+
+        androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"家這行才能滑動
+        >
+
+-->
+<!-- coordinatorlayout：可以讓容器懸浮於哪個容器之上-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+<!--    整個bar要做特效的容器-->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <!--   滑動消失的toolbar放此     -->
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentScrim="@color/colorPrimary"
+            app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
+            app:title="@string/title">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/toolbar_icon" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
+
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- 懸浮按鈕   -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#ffffff"
+        android:elevation="4dp"
+        android:src="@drawable/float_icon"
+        app:layout_anchor="@id/appBar"
+        app:layout_anchorGravity="bottom|end" />
+
+
+    <!--    -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="8sp"
+            android:padding="16dp"
+            android:text="@string/content_text"
+            android:textSize="20sp" />
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
